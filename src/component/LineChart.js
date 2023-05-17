@@ -22,6 +22,7 @@ const moisURL="http://localhost:8080/api/mois/getAreaMois/";
 function LineChart({device_id, device_type, area_id}) {
     const [cur_area, setCur_Area] = useState(area_id);
     const [temp, setTemp] = useState([]);
+    const [feed, setFeed] = useState("");
     const [chartType, setChartType] = useState(null);
     const [deviceID, setDeviceID] = useState(device_id);
     const [baseReqURL, setBaseURL] = useState("");
@@ -33,13 +34,16 @@ function LineChart({device_id, device_type, area_id}) {
 
       if (chartType === "cbn"){
         setBaseURL(tempURL);
+        setFeed("bbc-temp");
       }
     
       if (chartType === "cbda"){
         setBaseURL(moisURL);
+        setFeed("bbc-moisture");
       }
       
       const fetchData = () => {
+        axios.get("http://localhost:8080/api/feed/"+feed);
         axios.get(baseReqURL+cur_area)
         .then((res) => {
           setTemp(res.data);
@@ -58,7 +62,7 @@ function LineChart({device_id, device_type, area_id}) {
 
     
         const data = {
-            labels: ["24h", "20h", "16h", "12h", "8h", "4h", "0h"],
+            labels: ["30s", "25s", "20s", "15s", "10s", "5s", "0s"],
             datasets: [{
               data: [null],
               backgroundColor: 'transparent',
